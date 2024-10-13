@@ -20,3 +20,7 @@ func Println() {
 	log.Println("======================================================")
 	log.Println(publicKey)
 }
+
+func GetPrivKey() []byte {
+	return []byte(privateKey)
+}
