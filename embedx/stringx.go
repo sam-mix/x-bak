@@ -24,3 +24,7 @@ func Println() {
 func GetPrivKey() []byte {
 	return []byte(privateKey)
 }
+
+func GetPubKey() []byte {
+	return []byte(publicKey)
+}

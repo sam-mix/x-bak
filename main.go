@@ -2,24 +2,44 @@ package main
 
 import (
 	"crypto/ecdsa"
-	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/sha256"
+	"crypto/x509"
+	"encoding/pem"
 	"fmt"
 	"log"
+
+	"sam-mix.com/x/embedx"
 )
 
-// secp256r1
-
-func main() {
-
-	// 解析私钥
-	// 生成 secp256r1 曲线上的 ECDSA 私钥
-	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	if err != nil {
-		log.Fatalf("无法生成密钥对: %v", err)
+func loadECDSAPrivateKeyFromPEM(pemBytes []byte) (*ecdsa.PrivateKey, error) {
+	// Decode the PEM block containing the private key
+	block, _ := pem.Decode(pemBytes)
+	if block == nil || block.Type != "EC PRIVATE KEY" {
+		return nil, fmt.Errorf("failed to decode PEM block containing EC PRIVATE KEY")
 	}
 
+	// Parse the private key
+	privateKey, err := x509.ParseECPrivateKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return privateKey, nil
+}
+
+func main() {
+	// Load the ECDSA private key from the PEM file
+	privateKey, err := loadECDSAPrivateKeyFromPEM(embedx.GetPrivKey())
+	if err != nil {
+		log.Fatalf("failed to load ECDSA private key: %v", err)
+	}
+
+	// Print the private key (for demonstration purposes only; do not do this in production)
+	fmt.Printf("Loaded ECDSA private key: %+v\n", privateKey)
+
+	// You can now use the privateKey for signing operations
+	// ...
 	// 要签名的消息
 	message := []byte("This is a message to be signed")
 	hash := sha256.Sum256(message)
@@ -33,6 +53,4 @@ func main() {
 
 	// 打印签名（通常你会将其发送或存储在某处）
 	fmt.Printf("Signature: (r: %x, s: %x)\n", r, s)
-
-	// ... 在这里，你可以将签名和消息发送给需要验证的接收方 ...
 }
