@@ -5,6 +5,7 @@ import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.security.spec.ECGenParameterSpec;
 
 public class ECDSASignatureHexExample {
 
@@ -39,13 +40,13 @@ public class ECDSASignatureHexExample {
 //        }
 
 
-//        // 生成密钥对的方法（与之前相同）
-//    public static KeyPair generateKeyPair() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
-//        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
-//        ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256r1");
-//        keyGen.initialize(ecSpec, new SecureRandom());
-//        return keyGen.generateKeyPair();
-//    }
+       // 生成密钥对的方法（与之前相同）
+   public static KeyPair generateKeyPair() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+       KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
+       ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256r1");
+       keyGen.initialize(ecSpec, new SecureRandom());
+       return keyGen.generateKeyPair();
+   }
 
     // 创建签名的方法（与之前相同，但添加了返回hex字符串的功能）
     public static String signDataToHex(byte[] data, PrivateKey privateKey) throws SignatureException {
@@ -98,8 +99,8 @@ public class ECDSASignatureHexExample {
     public static void main(String[] args) {
         try {
             // 生成密钥对
-//            KeyPair keyPair = generateKeyPair();
-            KeyPair keyPair = getKeyPairFromPEM("../embedx/assets/private_key.pem", "../embedx/assets/public_key.pem");
+           KeyPair keyPair = generateKeyPair();
+            // KeyPair keyPair = getKeyPairFromPEM("../embedx/assets/private_key.pem", "../embedx/assets/public_key.pem");
             PrivateKey privateKey = keyPair.getPrivate();
             PublicKey publicKey = keyPair.getPublic();
 
